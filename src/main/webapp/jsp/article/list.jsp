@@ -14,7 +14,48 @@ List<Map<String, Object>> articleRows = (List<Map<String, Object>>) request.getA
 <title>게시글 목록</title>
 </head>
 <body>
-	<h1>게시글 목록</h1>
+	<h1>게시글 목록, v4</h1>
+
+	<ul>
+		<%
+		for (Map<String, Object> articleRow : articleRows) {
+		%>
+		<li><%=articleRow.get("id")%> 번, <%=articleRow.get("regDate")%>,
+			<%=articleRow.get("title")%>, <%=articleRow.get("body")%></li>
+		<%
+		}
+		%>
+	</ul>
+
+
+	<h1>게시글 목록, v3</h1>
+
+	<ul>
+		<%
+		for (int i = 0; i < articleRows.size(); i++) {
+		%>
+		<li><%=articleRows.get(i).get("id")%> 번, <%=articleRows.get(i).get("regDate")%>,
+			<%=articleRows.get(i).get("title")%>, <%=articleRows.get(i).get("body")%></li>
+		<%
+		}
+		%>
+	</ul>
+
+
+	<h1>게시글 목록, v2</h1>
+
+	<ul>
+		<%
+		for (int i = 0; i <= 2; i++) {
+		%>
+		<li><%=articleRows.get(i).get("id")%> 번, <%=articleRows.get(i).get("regDate")%>,
+			<%=articleRows.get(i).get("title")%>, <%=articleRows.get(i).get("body")%></li>
+		<%
+		}
+		%>
+	</ul>
+
+	<h1>게시글 목록, v1</h1>
 
 	<ul>
 		<li><%=articleRows.get(0).get("id")%> 번, <%=articleRows.get(0).get("regDate")%>,
