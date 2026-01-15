@@ -1,22 +1,21 @@
-package com.KoreaIT.java.AM_jsp;
+package com.KoreaIT.java.AM_jsp.util;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.KoreaIT.java.AM_jsp.exception.SQLErrorException;
 
 public class DBUtil {
-	HttpServletRequest req;
-	HttpServletResponse resp;
 
-	public DBUtil(HttpServletRequest request, HttpServletResponse response) {
-		this.req = request;
-		this.resp = response;
-	}
 
 	public static Map<String, Object> selectRow(Connection dbConn, String sql) {
 		List<Map<String, Object>> rows = selectRows(dbConn, sql);
