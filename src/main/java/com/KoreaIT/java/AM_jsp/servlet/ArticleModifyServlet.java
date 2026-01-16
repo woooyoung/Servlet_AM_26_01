@@ -47,9 +47,9 @@ public class ArticleModifyServlet extends HttpServlet {
 			sql.append("WHERE id = ?", id);
 
 			Map<String, Object> articleRow = DBUtil.selectRow(conn, sql);
-			
-			if(articleRow == null) {
-				//todo
+
+			if (articleRow == null) {
+				// todo
 			}
 
 			request.setAttribute("articleRow", articleRow);
@@ -67,6 +67,12 @@ public class ArticleModifyServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		doGet(request, response);
 	}
 
 }
