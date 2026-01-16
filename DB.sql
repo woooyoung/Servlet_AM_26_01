@@ -6,36 +6,62 @@ USE `Servlet_AM_26_01`;
 CREATE TABLE article (
                          id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
                          regDate DATETIME NOT NULL,
-                         updateDate DATETIME NOT NULL,
                          title CHAR(100) NOT NULL,
                          `body` TEXT NOT NULL
+);
+
+# 회원 테이블
+CREATE TABLE `member` (
+                         id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                         regDate DATETIME NOT NULL,
+                         loginId CHAR(100) NOT NULL,
+                         loginPw CHAR(200) NOT NULL,
+                         `name` CHAR(100) NOT NULL
 );
 
 # 게시글 TD
 INSERT INTO article
 SET regDate = NOW(),
-updateDate = NOW(),
+
 title = '제목1',
 `body` = '내용1';
 
 INSERT INTO article
 SET regDate = NOW(),
-updateDate = NOW(),
+
 title = '제목2',
 `body` = '내용2';
 
 INSERT INTO article
 SET regDate = NOW(),
-updateDate = NOW(),
+
 title = '제목3',
 `body` = '내용3';
+
+# 회원 TD
+INSERT INTO `member`
+SET regDate = NOW(),
+loginId = 'test1',
+loginPw = 'test1',
+`name` = '회원1';
+
+INSERT INTO `member`
+SET regDate = NOW(),
+loginId = 'test2',
+loginPw = 'test2',
+`name` = '회원2';
 
 DESC article;
 
 SELECT *
-FROM article;
+FROM article ORDER BY id DESC;
+
+SELECT *
+FROM `member`;
 
 ##===============================###################### 테스트
+
+INSERT INTO article SET regDate = NOW(), title = '제목1', `body` = '내용1'; , DATA=[, ]
 
 SELECT *
 FROM article
