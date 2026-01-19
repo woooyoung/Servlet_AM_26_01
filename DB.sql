@@ -51,6 +51,17 @@ loginId = 'test2',
 loginPw = 'test2',
 `name` = '회원2';
 
+ALTER TABLE article ADD COLUMN memberId INT(10) UNSIGNED NOT NULL AFTER regDate;
+
+UPDATE article
+SET memberId = 1
+WHERE id IN (1,2);
+
+UPDATE article
+SET memberId = 2
+WHERE id = 3;
+
+
 DESC article;
 
 SELECT *
@@ -64,6 +75,10 @@ FROM `member`;
 INSERT INTO article SET regDate = NOW(), title = '제목1', `body` = '내용1'; , DATA=[, ]
 
 SELECT *
+FROM `member`
+WHERE loginId = 'test3';
+
+SELECT *
 FROM article
 ORDER BY id DESC;
 
@@ -75,14 +90,14 @@ FROM article AS A
          INNER JOIN `member` AS M
                     ON A.memberId = M.id;
 
-
+SELECT CEILING(RAND() * 2);
 
 # article 대량생성
 INSERT INTO article
 SET regDate = NOW(),
-updateDate = NOW(),
-title = CONCAT('제목', SUBSTRING(RAND() * 1000 FROM 1 FOR 2)),
-`body` = CONCAT('내용', SUBSTRING(RAND() * 1000 FROM 1 FOR 2));
+memberId = CEILING(RAND() * 2),
+title = CONCAT('제목', RAND()),
+`body` = CONCAT('내용', RAND());
 
 # member 대량생성
 INSERT INTO `member`
