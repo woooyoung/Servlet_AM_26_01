@@ -1,6 +1,3 @@
-<%@page import="java.util.List"%>
-<%@page import="java.util.Map"%>
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%
@@ -30,29 +27,8 @@ table>thead>tr>th, table>tbody>tr>td {
 	<a href="../home/main">메인으로 이동</a>
 
 	<h1>게시글 목록</h1>
-	<div><%=loginedMemberId%>번 회원 로그인 중
-	</div>
-	<div><%=loginedMember%></div>
-	<%
-	if (isLogined) {
-	%>
-	<div>
-		<a href="../member/doLogout">로그아웃</a>
-		<a href="write">글쓰기</a>
-	</div>
-	<%
-	}
-	%>
 
-	<%
-	if (!isLogined) {
-	%>
-	<div>
-		<a href="../member/login">로그인</a>
-	</div>
-	<%
-	}
-	%>
+	<%@ include file="../part/top_bar.jspf"%>
 
 	총 게시글 갯수 :
 	<%=totalCnt%>

@@ -4,11 +4,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
-import com.KoreaIT.java.AM_jsp.util.DBUtil;
-import com.KoreaIT.java.AM_jsp.util.SecSql;
+import com.KoreaIT.java.AM_jsp.controller.ArticleController;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,8 +15,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/article/list")
-public class ArticleListServlet extends HttpServlet {
+@WebServlet("/s/*")
+public class DispatcherServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -41,30 +39,6 @@ public class ArticleListServlet extends HttpServlet {
 		try {
 			conn = DriverManager.getConnection(url, user, password);
 
-			int page = 1;
-
-			if (request.getParameter("page") != null && request.getParameter("page").length() != 0) {
-				page = Integer.parseInt(request.getParameter("page"));
-			}
-
-			int itemsInAPage = 10;
-			int limitFrom = (page - 1) * itemsInAPage;
-
-			SecSql sql = SecSql.from("SELECT COUNT(*)");
-			sql.append("FROM article;");
-
-			int totalCnt = DBUtil.selectRowIntValue(conn, sql);
-			int totalPage = (int) Math.ceil(totalCnt / (double) itemsInAPage);
-
-			sql = SecSql.from("SELECT A.*, M.name");
-			sql.append("FROM article AS A");
-			sql.append("INNER JOIN `member` AS M");
-			sql.append("ON A.memberId = M.id");
-			sql.append("ORDER BY A.id DESC");
-			sql.append("LIMIT ?, ?;", limitFrom, itemsInAPage);
-
-			List<Map<String, Object>> articleRows = DBUtil.selectRows(conn, sql);
-
 			HttpSession session = request.getSession();
 
 			boolean isLogined = false;
@@ -81,12 +55,38 @@ public class ArticleListServlet extends HttpServlet {
 			request.setAttribute("loginedMemberId", loginedMemberId);
 			request.setAttribute("loginedMember", loginedMember);
 
-			request.setAttribute("page", page);
-			request.setAttribute("articleRows", articleRows);
-			request.setAttribute("totalCnt", totalCnt);
-			request.setAttribute("totalPage", totalPage);
+			String requestUri = request.getRequestURI();
 
-			request.getRequestDispatcher("/jsp/article/list.jsp").forward(request, response);
+			System.out.println(requestUri);
+
+			String[] reqUriBits = requestUri.split("/");
+
+			// /~~/s/article/list
+//			System.out.println(reqUriBits[0]);
+//			System.out.println(reqUriBits[1]);
+//			System.out.println(reqUriBits[2]);
+//			System.out.println(reqUriBits[3]);
+//			System.out.println(reqUriBits[4]);
+
+			if (reqUriBits.length < 5) {
+				response.getWriter().append(
+						String.format("<script>alert('올바른 요청이 x'); location.replace('../home/main');</script>"));
+				return;
+			}
+
+			String controllerName = reqUriBits[3];
+			String actionMethodName = reqUriBits[4];
+
+			if (controllerName.equals("article")) {
+				ArticleController articleController = new ArticleController(request, response, conn);
+
+				if (actionMethodName.equals("list")) {
+					articleController.showList();
+				}
+			}
+//			else if (controllerName.equals("member")) {
+//				MemberController memberController = new MemberController();
+//			}
 
 		} catch (SQLException e) {
 			System.out.println("에러 : " + e);
@@ -99,6 +99,8 @@ public class ArticleListServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
+
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
