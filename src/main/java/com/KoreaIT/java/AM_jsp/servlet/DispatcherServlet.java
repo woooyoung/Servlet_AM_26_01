@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import com.KoreaIT.java.AM_jsp.controller.ArticleController;
+import com.KoreaIT.java.AM_jsp.controller.HomeController;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,11 +24,13 @@ public class DispatcherServlet extends HttpServlet {
 
 		response.setContentType("text/html;charset=UTF-8");
 
+		// DB 연결
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			System.out.println("클래스 없음");
+			System.out.println("클래스 x");
 			e.printStackTrace();
+
 		}
 
 		String url = "jdbc:mysql://127.0.0.1:3306/Servlet_AM_26_01?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul";
@@ -60,36 +63,51 @@ public class DispatcherServlet extends HttpServlet {
 			System.out.println(requestUri);
 
 			String[] reqUriBits = requestUri.split("/");
-
-			// /~~/s/article/list
-//			System.out.println(reqUriBits[0]);
-//			System.out.println(reqUriBits[1]);
-//			System.out.println(reqUriBits[2]);
-//			System.out.println(reqUriBits[3]);
-//			System.out.println(reqUriBits[4]);
+			// /~~~/s/article/list
 
 			if (reqUriBits.length < 5) {
-				response.getWriter().append(
-						String.format("<script>alert('올바른 요청이 x'); location.replace('../home/main');</script>"));
+				response.getWriter()
+						.append(String.format("<script>alert('올바른 요청 x'); location.replace('../home/main');</script>"));
 				return;
 			}
 
 			String controllerName = reqUriBits[3];
 			String actionMethodName = reqUriBits[4];
 
-			if (controllerName.equals("article")) {
+			if (controllerName.equals("home")) {
+				HomeController homeController = new HomeController(request, response);
+
+				homeController.showMain();
+			} else if (controllerName.equals("article")) {
 				ArticleController articleController = new ArticleController(request, response, conn);
 
-				if (actionMethodName.equals("list")) {
+				switch (actionMethodName) {
+				case "list":
 					articleController.showList();
+					break;
+				case "detail":
+					articleController.showDetail();
+					break;
+				case "doDelete":
+					articleController.doDelete();
+					break;
+				case "modify":
+					articleController.showModify();
+					break;
+				case "doModify":
+					articleController.doModify();
+					break;
+				case "write":
+					articleController.showWrite();
+					break;
+				case "doWrite":
+					articleController.doWrite();
+					break;
 				}
 			}
-//			else if (controllerName.equals("member")) {
-//				MemberController memberController = new MemberController();
-//			}
 
 		} catch (SQLException e) {
-			System.out.println("에러 : " + e);
+			System.out.println("에러 1 : " + e);
 		} finally {
 			try {
 				if (conn != null && !conn.isClosed()) {
@@ -99,8 +117,6 @@ public class DispatcherServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
-
-		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
